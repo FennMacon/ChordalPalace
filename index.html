@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>chordal palace</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+				font-weight: bold;
+				text-align:center;
+			}
+
+			a {
+				color:#0078ff;
+			}
+
+			#info {
+				color:#fff;
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+				z-index:100;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="info">
+			Chordal Palace
+			Fenn Macon
+			navigate with WASD / arrows / mouse
+		</div>
+
+
+		<div id="container"></div>
+
+		<script src="three.min.js"></script>
+
+		<script src="js/controls/FirstPersonControls.js"></script>
+
+		<script src="js/Detector.js"></script>
+
+		<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var container;
+			var camera, controls, scene, renderer;
+			var light, pointLight;
+
+			var mesh;
+			var material_sphere1, material_sphere2;
+
+			var clock = new THREE.Clock();
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( -500, 25, -500 );
+
+				var listener = new THREE.AudioListener();
+				camera.add( listener );
+
+				controls = new THREE.FirstPersonControls( camera );
+
+				controls.movementSpeed = 70;
+				controls.lookSpeed = 0.05;
+				controls.noFly = true;
+				controls.lookVertical = false;
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.Fog( 0xefd1b5, 0.002 );
+				light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 0, 0.5, 1 ).normalize();
+				scene.add( light );
+
+				//walls
+
+				var geometry = new THREE.BoxGeometry( 500, 100, 10 );
+				var material_wall1 = new THREE.MeshLambertMaterial( { color: 0xff1100, emissive: 0x0011ff, } );
+				var wall1 = new THREE.Mesh( geometry, material_wall1 );
+				wall1.position.set( 250, 50, -400 );
+				scene.add( wall1 );
+
+				var geometry = new THREE.BoxGeometry( 500, 100, 10 );
+				var material_wall2 = new THREE.MeshLambertMaterial( { color: 0xff2221, emissive: 0x1222ff, } );
+				var wall2 = new THREE.Mesh( geometry, material_wall2 );
+				wall2.position.set( 250, 50, -300 );
+				scene.add( wall2 );
+
+				var geometry = new THREE.BoxGeometry( 500, 100, 10 );
+				var material_wall3 = new THREE.MeshLambertMaterial( { color: 0xff3343, emissive: 0x3433ff, } );
+				var wall3 = new THREE.Mesh( geometry, material_wall3 );
+				wall3.position.set( 250, 50, -200 );
+				scene.add( wall3 )
+
+				var geometry = new THREE.BoxGeometry( 500, 100, 10 );
+				var material_wall4 = new THREE.MeshLambertMaterial( { color: 0xff4465, emissive: 0x5644ff, } );
+				var wall4 = new THREE.Mesh( geometry, material_wall4 );
+				wall4.position.set( 250, 50, -100 );
+				scene.add( wall4 );
+
+				var geometry = new THREE.BoxGeometry( 500, 100, 10 );
+				var material_wall5 = new THREE.MeshLambertMaterial( { color: 0xff5587, emissive: 0x7855ff, } );
+				var wall5 = new THREE.Mesh( geometry, material_wall5 );
+				wall5.position.set( 250, 50, 0 );
+				scene.add( wall5 );
+
+				var geometry = new THREE.BoxGeometry( 500, 100, 10 );
+				var material_wall6 = new THREE.MeshLambertMaterial( { color: 0xff66a9, emissive: 0x9a66ff, } );
+				var wall6 = new THREE.Mesh( geometry, material_wall6 );
+				wall6.position.set( 250, 50, 100 );
+				scene.add( wall6 );
+
+				var geometry = new THREE.BoxGeometry( 500, 100, 10 );
+				var material_wall7 = new THREE.MeshLambertMaterial( { color: 0xff77cb, emissive: 0xbc77ff, } );
+				var wall7 = new THREE.Mesh( geometry, material_wall7 );
+				wall7.position.set( 250, 50, 200 );
+				scene.add( wall7 );
+
+				var geometry = new THREE.BoxGeometry( 500, 100, 10 );
+				var material_wall8 = new THREE.MeshLambertMaterial( { color: 0xff88ed, emissive: 0xde88ff, } );
+				var wall8 = new THREE.Mesh( geometry, material_wall8 );
+				wall8.position.set( 250, 50, 300 );
+				scene.add( wall8 );			
+
+				var geometry = new THREE.BoxGeometry( 500, 100, 10 );
+				var material_wall9 = new THREE.MeshLambertMaterial( { color: 0xff99ff, emissive: 0xff99ff, } );
+				var wall9 = new THREE.Mesh( geometry, material_wall9 );
+				wall9.position.set( 250, 50, 400 );
+				scene.add( wall9 );	
+
+				//sphere
+
+				var sphere = new THREE.SphereGeometry( 20, 4, 3 );
+
+				//sphere column a
+
+				material_sphere1 = new THREE.MeshLambertMaterial( { color: 0xff0000, shading: THREE.SmoothShading, wireframe: true } );
+				material_sphere2 = new THREE.MeshLambertMaterial( { color: 0xff2200, shading: THREE.SmoothShading, wireframe: true } );
+				material_sphere3 = new THREE.MeshLambertMaterial( { color: 0xff4400, shading: THREE.SmoothShading, wireframe: true } );
+				material_sphere4 = new THREE.MeshLambertMaterial( { color: 0xff6600, shading: THREE.SmoothShading, wireframe: true } );	
+				material_sphere5 = new THREE.MeshLambertMaterial( { color: 0xff8800, shading: THREE.SmoothShading, wireframe: true } );
+				material_sphere6 = new THREE.MeshLambertMaterial( { color: 0xffaa00, shading: THREE.SmoothShading, wireframe: true } );
+				material_sphere7 = new THREE.MeshLambertMaterial( { color: 0xffcc00, shading: THREE.SmoothShading, wireframe: true } );
+				material_sphere8 = new THREE.MeshLambertMaterial( { color: 0xffee00, shading: THREE.SmoothShading, wireframe: true } );	
+
+				// sound spheres column a
+
+				var mesh1 = new THREE.Mesh( sphere, material_sphere1 );
+				mesh1.position.set( 250, 30, -350 );
+				scene.add( mesh1 );
+
+				var sound1 = new THREE.Audio( listener );
+				sound1.load( 'sounds/F2.mp3' );
+				sound1.setRefDistance( 500 );
+				mesh1.add( sound1 );
+
+				//
+
+				var mesh2 = new THREE.Mesh( sphere, material_sphere2 );
+				mesh2.position.set( 250, 30, -250 );
+				scene.add( mesh2 );
+
+				var sound2 = new THREE.Audio( listener );
+				sound2.load( 'sounds/A2.mp3' );
+				sound2.setRefDistance( 500 );
+				mesh2.add( sound2 );
+
+				//
+
+				var mesh3 = new THREE.Mesh( sphere, material_sphere3 );
+				mesh3.position.set( 250, 30, -150 );
+				scene.add( mesh3 );
+
+				var sound3 = new THREE.Audio( listener );
+				sound3.load( 'sounds/C2.mp3' );
+				sound3.setRefDistance( 500 );
+				mesh3.add( sound3 );
+
+				//
+
+				var mesh4 = new THREE.Mesh( sphere, material_sphere4 );
+				mesh4.position.set( 250, 30, -50 );
+				scene.add( mesh4 );
+
+				var sound4 = new THREE.Audio( listener );
+				sound4.load( 'sounds/E2.mp3' );
+				sound4.setRefDistance( 500 );
+				mesh4.add( sound4 );
+
+				//
+
+				var mesh5 = new THREE.Mesh( sphere, material_sphere5 );
+				mesh5.position.set( 250, 30, 50 );
+				scene.add( mesh5 );
+
+				var sound5 = new THREE.Audio( listener );
+				sound5.load( 'sounds/G3.mp3' );
+				sound5.setRefDistance( 500 );
+				mesh5.add( sound5 );
+
+				//
+
+				var mesh6 = new THREE.Mesh( sphere, material_sphere6 );
+				mesh6.position.set( 250, 30, 150 );
+				scene.add( mesh6 );
+
+				var sound6 = new THREE.Audio( listener );
+				sound6.load( 'sounds/B3.mp3' );
+				sound6.setRefDistance( 500 );
+				mesh6.add( sound6 );
+
+				//
+
+				var mesh7 = new THREE.Mesh( sphere, material_sphere7 );
+				mesh7.position.set( 250, 30, 250 );
+				scene.add( mesh7 );
+
+				var sound7 = new THREE.Audio( listener );
+				sound7.load( 'sounds/D3.mp3' );
+				sound7.setRefDistance( 500 );
+				mesh7.add( sound7 );
+
+				//
+
+				var mesh8 = new THREE.Mesh( sphere, material_sphere8 );
+				mesh8.position.set( 250, 30, 350 );
+				scene.add( mesh8 );
+
+				var sound8 = new THREE.Audio( listener );
+				sound8.load( 'sounds/F4.mp3' );
+				sound8.setRefDistance( 500 );
+				mesh8.add( sound8 );
+
+				// ground
+
+				var helper = new THREE.GridHelper( 500, 10 );
+				helper.color1.setHex( 0x444444 );
+				helper.color2.setHex( 0x444444 );
+				helper.position.y = 0.1
+				scene.add( helper );
+
+				//
+
+				renderer = new THREE.WebGLRenderer( { preserveDrawingBuffer: true } );
+				renderer.autoClearColor = false;
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				container.innerHTML = "";
+				container.appendChild( renderer.domElement );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				controls.handleResize();
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				render();
+
+			}
+
+
+			function render() {
+
+				var delta = clock.getDelta(),
+					time = clock.getElapsedTime() * 5;
+
+				controls.update( delta );
+
+
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+
+	</body>
+</html>
